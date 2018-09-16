@@ -215,7 +215,7 @@ for frame_idx in range(1, num_frames + 1):
     if done:
         all_time = (time.time()-time_start)/60
         print("episode_reward:{0},all time:{1}".format(episode_reward, all_time))
-        logger.info("rewards:{0}, whole time:{1}m, frame_idx:{3}".format(episode_reward, all_time, frame_idx))
+        logger.info("rewards:{0}, whole time:{1}m, frame_idx:{2}".format(episode_reward, all_time, frame_idx))
         state = env.reset()
         all_rewards.append(episode_reward)
         episode_reward = 0
