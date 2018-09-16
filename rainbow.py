@@ -209,7 +209,7 @@ for frame_idx in range(1, num_frames + 1):
     episode_reward += reward
 
     if done:
-        print("dfdfd")
+        print("episode_reward:{}".format(episode_reward))
         logger.info("rewards:{}".format(episode_reward))
         state = env.reset()
         all_rewards.append(episode_reward)
