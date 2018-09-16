@@ -190,8 +190,8 @@ if USE_CUDA:
 optimizer = optim.Adam(current_model.parameters(), lr=0.0001)
 update_target(current_model, target_model)
 
-replay_initial = 1000000
-replay_buffer = ReplayBuffer(replay_initial)
+replay_initial = 10000
+replay_buffer = ReplayBuffer(1000000)
 
 num_frames = 100000000
 batch_size = 32
