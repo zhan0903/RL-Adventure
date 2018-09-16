@@ -4,6 +4,7 @@ import gym.spaces
 import numpy as np
 import logging
 import torch
+import time
 import torch.nn as nn
 import torch.optim as optim
 import torch.autograd as autograd
@@ -20,7 +21,7 @@ Variable = lambda *args, **kwargs: autograd.Variable(*args, **kwargs).cuda() if 
 
 from common.wrappers import make_atari, wrap_deepmind, wrap_pytorch
 
-env_id = "PongNoFrameskip-v4"
+env_id = "AmidarNoFrameskip-v4"
 env = make_atari(env_id)
 env = wrap_deepmind(env)
 env = wrap_pytorch(env)
@@ -34,6 +35,8 @@ logger.addHandler(fh)
 console_handler = logging.StreamHandler()
 console_handler.setFormatter(formatter)
 logger.addHandler(console_handler)
+
+logger.setLevel(level=logging.INFO)
 
 
 def projection_distribution(next_state, rewards, dones):
@@ -187,10 +190,10 @@ if USE_CUDA:
 optimizer = optim.Adam(current_model.parameters(), lr=0.0001)
 update_target(current_model, target_model)
 
-replay_initial = 10000
-replay_buffer = ReplayBuffer(100000)
+replay_initial = 1000000
+replay_buffer = ReplayBuffer(replay_initial)
 
-num_frames = 100000
+num_frames = 100000000
 batch_size = 32
 gamma = 0.99
 
@@ -199,6 +202,7 @@ all_rewards = []
 episode_reward = 0
 
 state = env.reset()
+time_start = time.time()
 for frame_idx in range(1, num_frames + 1):
     action = current_model.act(state)
 
@@ -209,8 +213,9 @@ for frame_idx in range(1, num_frames + 1):
     episode_reward += reward
 
     if done:
-        print("episode_reward:{}".format(episode_reward))
-        logger.info("rewards:{}".format(episode_reward))
+        all_time = (time.time()-time_start)/60
+        print("episode_reward:{0},all time:{1}".format(episode_reward, all_time))
+        logger.info("rewards:{0}, whole time:{1}m, frame_idx:{3}".format(episode_reward, all_time, frame_idx))
         state = env.reset()
         all_rewards.append(episode_reward)
         episode_reward = 0
@@ -222,5 +227,5 @@ for frame_idx in range(1, num_frames + 1):
     # if frame_idx % 10000 == 0:
     #     plot(frame_idx, all_rewards, losses)
 
-    if frame_idx % 1000 == 0:
+    if frame_idx % 10000 == 0:
         update_target(current_model, target_model)
