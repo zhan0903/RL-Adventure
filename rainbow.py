@@ -13,7 +13,7 @@ from common.layers import NoisyLinear
 from common.replay_buffer import ReplayBuffer
 
 from IPython.display import clear_output
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 USE_CUDA = torch.cuda.is_available()
 Variable = lambda *args, **kwargs: autograd.Variable(*args, **kwargs).cuda() if USE_CUDA else autograd.Variable(*args, **kwargs)
